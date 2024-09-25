@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/weza/Documents/my stuf/aply for job/Coding_Challange/Coding_challange/Coding_challange/Coding_challange.csproj": {}
+    "/home/weza/Documents/my_stuf/aply_for_job/Coding_Challange/Coding_challange/Coding_challange/Coding_challange.csproj": {}
   },
   "projects": {
-    "/home/weza/Documents/my stuf/aply for job/Coding_Challange/Coding_challange/Coding_challange/Coding_challange.csproj": {
+    "/home/weza/Documents/my_stuf/aply_for_job/Coding_Challange/Coding_challange/Coding_challange/Coding_challange.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/weza/Documents/my stuf/aply for job/Coding_Challange/Coding_challange/Coding_challange/Coding_challange.csproj",
+        "projectUniqueName": "/home/weza/Documents/my_stuf/aply_for_job/Coding_Challange/Coding_challange/Coding_challange/Coding_challange.csproj",
         "projectName": "Coding_challange",
-        "projectPath": "/home/weza/Documents/my stuf/aply for job/Coding_Challange/Coding_challange/Coding_challange/Coding_challange.csproj",
+        "projectPath": "/home/weza/Documents/my_stuf/aply_for_job/Coding_Challange/Coding_challange/Coding_challange/Coding_challange.csproj",
         "packagesPath": "/home/weza/.nuget/packages/",
-        "outputPath": "/home/weza/Documents/my stuf/aply for job/Coding_Challange/Coding_challange/Coding_challange/obj/",
+        "outputPath": "/home/weza/Documents/my_stuf/aply_for_job/Coding_Challange/Coding_challange/Coding_challange/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/weza/.nuget/NuGet/NuGet.Config"
@@ -45,11 +45,15 @@
           "dependencies": {
             "AWSSDK.Core": {
               "target": "Package",
-              "version": "[3.7.400.20, )"
+              "version": "[3.7.400.23, )"
             },
             "AWSSDK.DynamoDBv2": {
               "target": "Package",
-              "version": "[3.7.400.20, )"
+              "version": "[3.7.401.1, )"
+            },
+            "AWSSDK.Extensions.NETCore.Setup": {
+              "target": "Package",
+              "version": "[3.7.301, )"
             },
             "FluentValidation.AspNetCore": {
               "target": "Package",

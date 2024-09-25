@@ -1,11 +1,8 @@
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Coding_challange.Models;
+using Coding_challange.Data;
 
 
 namespace Coding_challange.Controllers
@@ -15,11 +12,19 @@ namespace Coding_challange.Controllers
     [Route("api/[controller]")]
     public class ProductsController : ControllerBase
     {
+
+        private readonly Repository _repository;
+
+        public ProductsController(Repository repository)
+        {
+            _repository = repository;
+        }
+
         // GET: api/products/{id}
         [HttpGet("{id}")]
         public ActionResult<Product> GetProduct(int id)
         {
-            var product = _service.GetProduct(id);
+            var product = _repository.GetProduct(id);
 
             if (product == null)
             {
@@ -33,16 +38,16 @@ namespace Coding_challange.Controllers
         [HttpPost]
         public ActionResult<Product> CreateProduct(Product product)
         {
-            _service.CreateProduct(product);
+            _repository.CreateProduct(product);
         
             return Created();
         }
 
         // PUT: api/products/{id}
         [HttpPut("{id}")]
-        public IActionResult UpdateProduct(Guid id, Product updatedProduct)
+        public IActionResult UpdateProduct(int id, Product updatedProduct)
         {
-            var product = _service.GetProduct(id);
+            var product = _repository.GetProduct(id);
             if (product == null)
             {
                 return NotFound();
@@ -52,7 +57,7 @@ namespace Coding_challange.Controllers
             product.Price = updatedProduct.Price;
             product.Description = updatedProduct.Description;
             product.Stock = updatedProduct.Stock;
-            _service.UpdateProduct(product);
+            _repository.UpdateProduct(product);
 
             return NoContent();
         }
@@ -61,13 +66,13 @@ namespace Coding_challange.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteProduct(int id)
         {
-            var product = _service.GetProduct(id);
+            var product = _repository.GetProduct(id);
             if (product == null)
             {
                 return NotFound();
             }
             
-            _service.DeleteProduct(product);
+            _repository.DeleteProduct(id);
             
             return NoContent();
         }
