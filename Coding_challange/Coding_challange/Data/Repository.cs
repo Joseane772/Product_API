@@ -8,7 +8,7 @@ namespace Coding_challange.Data
 {
     public class Repository(IAmazonDynamoDB dynamoDbClient, IOptions<DynamoDbConfiguration> configuration)
     {
-        private readonly DynamoDbConfiguration _configuration = configuration.Value;
+        //private readonly DynamoDbConfiguration _configuration = configuration.Value;
 
 
         // Create a product
@@ -19,8 +19,8 @@ namespace Coding_challange.Data
                 TableName = "Products",
                 Item = new Dictionary<string, AttributeValue>
                 {
-                    { "Id", new AttributeValue { S = product.Id } },
-                    { "Name", new AttributeValue { S = product.Name } },
+                    { "id", new AttributeValue { S = product.Id } },
+                    { "name", new AttributeValue { S = product.Name } },
                 }
             };
 
@@ -39,7 +39,7 @@ namespace Coding_challange.Data
             var response = await dynamoDbClient.ScanAsync(request);
             return response.Items.Select(item => new Product
             {
-                Id = item["Id"].S,
+                Id = item["ID"].S,
                 Name = item["Name"].S,
                 Price = decimal.Parse(item["Price"].N),
                 Description = item["Description"].S,

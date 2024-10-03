@@ -24,14 +24,12 @@ builder.Services.AddSingleton<IAmazonDynamoDB>(sp =>
 {
     var config = sp.GetRequiredService<IOptions<DynamoDbConfiguration>>().Value;
 
-    var credentials = config.UseLocalStack
-        ? new Amazon.Runtime.BasicAWSCredentials("test", "test") // Dummy for LocalStack
-        : new Amazon.Runtime.BasicAWSCredentials(config.AwsAccessKeyId, config.AwsSecretAccessKey);
-
+    var credentials = new Amazon.Runtime.BasicAWSCredentials("test", "test"); // Dummy for LocalStack
+    
     var dynamoDbConfig = new AmazonDynamoDBConfig
     {
         ServiceURL = "http://localhost:4566", // LocalStack endpoint
-        RegionEndpoint = config.UseLocalStack ? Amazon.RegionEndpoint.USEast1 : Amazon.RegionEndpoint.GetBySystemName(config.Region)
+        AuthenticationRegion = "us-east-1", 
     };
 
     return new AmazonDynamoDBClient(credentials, dynamoDbConfig);

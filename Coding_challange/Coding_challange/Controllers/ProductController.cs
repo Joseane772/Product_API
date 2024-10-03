@@ -7,21 +7,13 @@ namespace Coding_challange.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ProductsController : ControllerBase
+public class ProductsController(Repository repository) : ControllerBase
 {
-    private readonly Repository _repository;
-
-    public ProductsController(Repository repository)
-    {
-        _repository = repository;
-    }
-
-
     // GET: api/products
     [HttpGet]
     public async Task<ActionResult<List<Product>>> GetProducts()
     {
-        var products = await _repository.GetProducts();
+        var products = await repository.GetProducts();
         return Ok(products); // Return 200 OK with the list of products
     }
 
@@ -29,7 +21,7 @@ public class ProductsController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<Product>> GetProduct(string id)
     {
-        var product = await _repository.GetProduct(id);
+        var product = await repository.GetProduct(id);
         if (product == null)
         {
             return NotFound(); // Return 404 if product not found
@@ -41,7 +33,7 @@ public class ProductsController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Product>> CreateProduct(Product product)
     {
-        await _repository.CreateProduct(product);
+        await repository.CreateProduct(product);
         return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product); // Return 201 Created
     }
 
@@ -49,13 +41,13 @@ public class ProductsController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateProduct(string id, Product updatedProduct)
     {
-        var existingProduct = await _repository.GetProduct(id);
+        var existingProduct = await repository.GetProduct(id);
         if (existingProduct == null)
         {
             return NotFound(); // Return 404 if the product is not found
         }
 
-        await _repository.UpdateProduct(id, updatedProduct); // Update the product
+        await repository.UpdateProduct(id, updatedProduct); // Update the product
         return NoContent(); // Return 204 No Content on successful update
     }
 
@@ -63,13 +55,13 @@ public class ProductsController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteProduct(string id)
     {
-        var product = await _repository.GetProduct(id);
+        var product = await repository.GetProduct(id);
         if (product == null)
         {
             return NotFound(); // Return 404 if the product is not found
         }
 
-        await _repository.DeleteProduct(id); // Delete the product
+        await repository.DeleteProduct(id); // Delete the product
         return NoContent(); // Return 204 No Content on successful delete
     }
 }
