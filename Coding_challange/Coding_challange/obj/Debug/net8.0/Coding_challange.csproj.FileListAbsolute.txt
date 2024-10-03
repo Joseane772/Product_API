@@ -121,3 +121,6 @@
 /home/weza/Documents/my_stuf/aply_for_job/Coding_Challange/Coding_challange/Coding_challange/obj/Debug/net8.0/Coding_challange.genruntimeconfig.cache
 /home/weza/Documents/my_stuf/aply_for_job/Coding_Challange/Coding_challange/Coding_challange/obj/Debug/net8.0/ref/Coding_challange.dll
 /home/weza/Documents/my_stuf/aply_for_job/Coding_Challange/Coding_challange/Coding_challange/bin/Debug/net8.0/AWSSDK.Extensions.NETCore.Setup.dll
+/home/weza/Documents/my_stuf/aply_for_job/Coding_Challange/Coding_challange/Coding_challange/bin/Debug/net8.0/LocalStack.Client.dll
+/home/weza/Documents/my_stuf/aply_for_job/Coding_Challange/Coding_challange/Coding_challange/bin/Debug/net8.0/LocalStack.Client.Extensions.dll
+/home/weza/Documents/my_stuf/aply_for_job/Coding_Challange/Coding_challange/Coding_challange/bin/Debug/net8.0/docker/volume/cache/machine.json

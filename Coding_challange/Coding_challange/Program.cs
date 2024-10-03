@@ -1,43 +1,63 @@
 using Amazon.DynamoDBv2;
 using Microsoft.Extensions.DependencyInjection;
-using Amazon.Extensions.NETCore.Setup;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Configuration;
+using Coding_challange.Configuration;
+using Coding_challange.Data; // Make sure to include this namespace
+using Microsoft.Extensions.Options; // For IOptions<T>
+using Microsoft.OpenApi.Models; // For Swagger
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Load DynamoDB configuration from appsettings.json
+builder.Services.Configure<DynamoDbConfiguration>(
+    builder.Configuration.GetSection("DynamoDbConfiguration"));
+
+// Add services to the container
 builder.Services.AddControllers();
 
-// Add Swagger for API documentation and UI testing.
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+// Register the Repository service
+builder.Services.AddScoped<Repository>();
 
-// Configure DynamoDB to use LocalStack with a specified region
+// Configure AWS SDK for DynamoDB
 builder.Services.AddSingleton<IAmazonDynamoDB>(sp =>
 {
-    var credentials = new Amazon.Runtime.BasicAWSCredentials("test", "test");
-    var config = new AmazonDynamoDBConfig
+    var config = sp.GetRequiredService<IOptions<DynamoDbConfiguration>>().Value;
+
+    var credentials = config.UseLocalStack
+        ? new Amazon.Runtime.BasicAWSCredentials("test", "test") // Dummy for LocalStack
+        : new Amazon.Runtime.BasicAWSCredentials(config.AwsAccessKeyId, config.AwsSecretAccessKey);
+
+    var dynamoDbConfig = new AmazonDynamoDBConfig
     {
-        ServiceURL = "http://localhost:4566",  
-        RegionEndpoint = Amazon.RegionEndpoint.USEast1  
+        ServiceURL = "http://localhost:4566", // LocalStack endpoint
+        RegionEndpoint = config.UseLocalStack ? Amazon.RegionEndpoint.USEast1 : Amazon.RegionEndpoint.GetBySystemName(config.Region)
     };
-    return new AmazonDynamoDBClient(credentials, config);
+
+    return new AmazonDynamoDBClient(credentials, dynamoDbConfig);
 });
 
-// Register the Repository class so it can be injected into controllers
-builder.Services.AddScoped<Coding_challange.Data.Repository>();
+// Add Swagger services
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+});
 
 var app = builder.Build();
 
-// Enable middleware to serve Swagger UI and Swagger JSON endpoint.
-if (app.Environment.IsDevelopment())  // only in development.
+// Enable Swagger middleware
+if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+        //c.RoutePrefix = string.Empty; // Set Swagger UI at the app's root
+    });
 }
 
-
+app.UseHttpsRedirection();
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

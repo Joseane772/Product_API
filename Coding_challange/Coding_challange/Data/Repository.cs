@@ -1,47 +1,73 @@
-using System;
-using System.Collections.Generic;
 using Amazon.DynamoDBv2;
-using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.Model;
 using Coding_challange.Models;
-
-
+using Coding_challange.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace Coding_challange.Data
 {
-    public class Repository
+    public class Repository(IAmazonDynamoDB dynamoDbClient, IOptions<DynamoDbConfiguration> configuration)
     {
-        private readonly IAmazonDynamoDB _dynamoDbClient;
-        // private readonly DynamoDbConfiguration _configuration;
+        private readonly DynamoDbConfiguration _configuration = configuration.Value;
 
-        public Repository(IAmazonDynamoDB dynamoDbClient)
+
+        // Create a product
+        public async Task CreateProduct(Product product)
         {
-            _dynamoDbClient = dynamoDbClient;
-            //_configuration = configuration;
+            var request = new PutItemRequest
+            {
+                TableName = "Products",
+                Item = new Dictionary<string, AttributeValue>
+                {
+                    { "Id", new AttributeValue { S = product.Id } },
+                    { "Name", new AttributeValue { S = product.Name } },
+                }
+            };
+
+            await dynamoDbClient.PutItemAsync(request);
+        }
+    
+
+        // Get all products
+        public async Task<List<Product>> GetProducts()
+        {
+            var request = new ScanRequest
+            {
+                TableName = "Products"
+            };
+
+            var response = await dynamoDbClient.ScanAsync(request);
+            return response.Items.Select(item => new Product
+            {
+                Id = item["Id"].S,
+                Name = item["Name"].S,
+                Price = decimal.Parse(item["Price"].N),
+                Description = item["Description"].S,
+                Stock = int.Parse(item["Stock"].N)
+            }).ToList();
         }
 
-        
-        public Product? GetProduct(int id)
+        // Get a product by ID
+        public async Task<Product?> GetProduct(string id)
         {
             var request = new GetItemRequest
             {
                 TableName = "Products",
                 Key = new Dictionary<string, AttributeValue>
                 {
-                    { "Id", new AttributeValue { S = id.ToString() } }
+                    { "Id", new AttributeValue { S = id } }
                 }
             };
 
-            var response = _dynamoDbClient.GetItemAsync(request).Result;
-
+            var response = await dynamoDbClient.GetItemAsync(request);
             if (response.Item == null || response.Item.Count == 0)
             {
-                return null;
+                return null; // Product not found
             }
 
             return new Product
             {
-                Id = int.Parse(response.Item["Id"].S),
+                Id = response.Item["Id"].S,
                 Name = response.Item["Name"].S,
                 Price = decimal.Parse(response.Item["Price"].N),
                 Description = response.Item["Description"].S,
@@ -49,60 +75,41 @@ namespace Coding_challange.Data
             };
         }
 
-        
-        public void CreateProduct(Product product)
-        {
-            var request = new PutItemRequest
-            {
-                TableName = "Products",
-                Item = new Dictionary<string, AttributeValue>
-                {
-                    { "Id", new AttributeValue { S = product.Id.ToString() } },
-                    { "Name", new AttributeValue { S = product.Name } },
-                    { "Price", new AttributeValue { N = product.Price.ToString() } },
-                    { "Description", new AttributeValue { S = product.Description } },
-                    { "Stock", new AttributeValue { N = product.Stock.ToString() } }
-                }
-            };
-
-            _dynamoDbClient.PutItemAsync(request).Wait();
-        }
-
-        
-        public void UpdateProduct(Product product)
+        // Update a product
+        public async Task UpdateProduct(string id, Product updatedProduct)
         {
             var request = new UpdateItemRequest
             {
                 TableName = "Products",
                 Key = new Dictionary<string, AttributeValue>
                 {
-                    { "Id", new AttributeValue { S = product.Id.ToString() } }
+                    { "Id", new AttributeValue { S = id } }
                 },
                 AttributeUpdates = new Dictionary<string, AttributeValueUpdate>
                 {
-                    { "Name", new AttributeValueUpdate { Action = "PUT", Value = new AttributeValue { S = product.Name } } },
-                    { "Price", new AttributeValueUpdate { Action = "PUT", Value = new AttributeValue { N = product.Price.ToString() } } },
-                    { "Description", new AttributeValueUpdate { Action = "PUT", Value = new AttributeValue { S = product.Description } } },
-                    { "Stock", new AttributeValueUpdate { Action = "PUT", Value = new AttributeValue { N = product.Stock.ToString() } } }
+                    { "Name", new AttributeValueUpdate { Action = "PUT", Value = new AttributeValue { S = updatedProduct.Name } } },
+                    { "Price", new AttributeValueUpdate { Action = "PUT", Value = new AttributeValue { N = updatedProduct.Price.ToString() } } },
+                    { "Description", new AttributeValueUpdate { Action = "PUT", Value = new AttributeValue { S = updatedProduct.Description } } },
+                    { "Stock", new AttributeValueUpdate { Action = "PUT", Value = new AttributeValue { N = updatedProduct.Stock.ToString() } } }
                 }
             };
 
-            _dynamoDbClient.UpdateItemAsync(request).Wait();
+            await dynamoDbClient.UpdateItemAsync(request);
         }
 
-        
-        public void DeleteProduct(int id)
+        // Delete a product
+        public async Task DeleteProduct(string id)
         {
             var request = new DeleteItemRequest
             {
                 TableName = "Products",
                 Key = new Dictionary<string, AttributeValue>
                 {
-                    { "Id", new AttributeValue { S = id.ToString() } }
+                    { "Id", new AttributeValue { S = id } }
                 }
             };
-        
-            _dynamoDbClient.DeleteItemAsync(request).Wait();
+
+            await dynamoDbClient.DeleteItemAsync(request);
         }
     }
 }

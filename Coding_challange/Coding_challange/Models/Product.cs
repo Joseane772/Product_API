@@ -1,14 +1,13 @@
-using System;
+
 
 namespace Coding_challange.Models
 {
     public class Product
     {
-        public int Id { get; set; }
-        public  string Name { get; set; }
-        public decimal Price { get; set; }
-        public string Description { get; set; }
-        public int Stock { get; set; }
+        public string Id { get; set; } // Unique identifier
+        public string Name { get; set; } // Product name
+        public decimal Price { get; set; } // Product price
+        public string Description { get; set; } // Product description
+        public int Stock { get; set; } // Quantity in stock
     }
 }
-
