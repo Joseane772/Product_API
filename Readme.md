@@ -18,7 +18,7 @@ To run the project locally, make sure you have the following installed:
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/Joseane772/Product_API.git
 cd Coding_challange
 ```
 
