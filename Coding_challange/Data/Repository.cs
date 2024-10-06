@@ -9,7 +9,7 @@ namespace Coding_challange.Data
 {
     public class Repository(IAmazonDynamoDB dynamoDbClient, IOptions<DynamoDbConfiguration> configuration)
     {
-        //private readonly DynamoDbConfiguration _configuration = configuration.Value;
+        private readonly DynamoDbConfiguration _configuration = configuration.Value;
 
 
         //create a table and add the some data  
@@ -48,7 +48,7 @@ namespace Coding_challange.Data
             {
                 Id = "1",
                 Name = "Product 1",
-                Price = decimal.Parse("10.99"),
+                Price = 10.99M,
                 Description = "This is product 1",
                 Stock = 100
             });
@@ -57,7 +57,7 @@ namespace Coding_challange.Data
             {
                 Id = "2",
                 Name = "Product 2",
-                Price = decimal.Parse("20.99"),
+                Price = 20.99M,
                 Description = "This is product 2",
                 Stock = 200
             });
@@ -209,6 +209,16 @@ namespace Coding_challange.Data
             };
 
             await dynamoDbClient.DeleteItemAsync(request);
+        }
+        
+        // Delete all products
+        public async Task DeleteAllProducts()
+        {
+            var products = await GetProducts();
+            foreach (var product in products)
+            {
+                await DeleteProduct(product.Id);
+            }
         }
     }
 }

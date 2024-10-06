@@ -40,8 +40,6 @@ cd docker
 docker-comopse up
 ```
 
-This configuration ensures that the project connects to LocalStack using **dummy AWS credentials** (`test`, `test`).
-
 ### 4. Run the Project
 
 You can run the project by executing the following command:
@@ -90,7 +88,7 @@ The API
 
 ### 7. Running Unit Tests
 
-This project also includes unit tests for the `Repository` and `ProductsController` classes.
+This project also includes unit tests for the `Repository` class.
 
 To run the tests, use the following command:
 
@@ -98,25 +96,15 @@ To run the tests, use the following command:
 dotnet test
 ```
 
-This will execute the tests and display the results.
+This will execute the flowing tests and display the results.
 
-## Additional Notes
+- `RepositoryTests`
+- - `GetProductsAsync_ReturnsProducts`
+- - `GetProductAsync_ReturnsProduct`
+- - `CreateProductAsync_ReturnsProduct`
+- - `UpdateProductAsync_ReturnsProduct`
+- - `DeleteProductAsync_ReturnsProduct`
 
-- **LocalStack Logs**: You can view the logs for LocalStack by running:
 
-  ```bash
-  docker logs localstack
-  ```
-
-- **Stopping LocalStack**: If you want to stop LocalStack, use:
-
-  ```bash
-  docker stop localstack
-  ```
-
-- **Removing LocalStack**: To remove LocalStack completely:
-
-  ```bash
-  docker rm localstack
-  ```
+- 
 
