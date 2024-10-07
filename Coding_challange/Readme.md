@@ -90,6 +90,14 @@ The API
 
 This project also includes unit tests for the `Repository` class.
 
+Be aware that the tests are using a DynamoDB client. 
+It is recommended to restart the LocalStack container before running the tests to ensure a clean environment.
+```bash
+cd docker
+docker-compose down
+docker-compose up
+```
+
 To run the tests, use the following command:
 
 ```bash
@@ -98,13 +106,14 @@ dotnet test
 
 This will execute the flowing tests and display the results.
 
-- `RepositoryTests`
-- - `GetProductsAsync_ReturnsProducts`
-- - `GetProductAsync_ReturnsProduct`
-- - `CreateProductAsync_ReturnsProduct`
-- - `UpdateProductAsync_ReturnsProduct`
-- - `DeleteProductAsync_ReturnsProduct`
+- `CreateProduct_ShouldCreateProduct_IfProductDoesNotExist`
+- `CreateProduct_ShouldNotCreateProduct_IfProductExists`
+- `GetProduct_ShouldReturnProduct_IfProductExists`
+- `GetProduct_ShouldReturnNull_IfProductDoesNotExist`
+- `GetProducts_ShouldReturnAllProducts`
+- `UpdateProduct_ShouldUpdateProduct_IfProductExists`
+- `UpdateProduct_ShouldNotUpdateProduct_IfProductDoesNotExist`
+- `DeleteProduct_ShouldDeleteProduct_IfProductExists`
+- `DeleteProduct_ShouldNotDeleteProduct_IfProductDoesNotExist`
 
-
-- 
 

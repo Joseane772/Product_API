@@ -193,12 +193,26 @@ namespace Coding_challange.Data
                 }
             };
 
+            //if the product does not exist throw an exception
+            var existingProduct = await GetProduct(id);
+            if (existingProduct == null)
+            {
+                throw new Exception("Product does not exist");
+            }
+            
             await dynamoDbClient.UpdateItemAsync(request);
         }
 
         // Delete a product
         public async Task DeleteProduct(string id)
         {
+            //check if the table exists if not create it
+            var tableResponse = await dynamoDbClient.ListTablesAsync(); 
+            if (!tableResponse.TableNames.Contains("Products"))
+            {
+                await CreateTable();
+            }
+            
             var request = new DeleteItemRequest
             {
                 TableName = "Products",
@@ -207,6 +221,14 @@ namespace Coding_challange.Data
                     { "id", new AttributeValue { S = id } }
                 }
             };
+            
+            //if the product does not exist throw an exception
+            var existingProduct = await GetProduct(id);
+            if (existingProduct == null)
+            {
+                throw new Exception("Product does not exist");
+            }
+            
 
             await dynamoDbClient.DeleteItemAsync(request);
         }

@@ -61,6 +61,8 @@ namespace Coding_challange.Coding_challange.Tests
         [Fact]
         public async Task GetProduct_ShouldReturnProduct_IfProductExists()
         {
+            
+            
             // Arrange: Make sure the product exists
             var existingProduct = new Product
             {
@@ -181,5 +183,104 @@ namespace Coding_challange.Coding_challange.Tests
             Assert.NotNull(products);
             Assert.Empty(products);
         }
+        
+        [Fact]
+        public async Task DeleteProduct_ShouldThrowException_IfProductDoesNotExist()
+        {   
+            // Act: delete all products
+            await _repository.DeleteAllProducts();
+            
+            // Arrange: Create a product
+            var product = new Product
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "Product 1",
+                Price = 19.99M,
+                Description = "This is product 1",
+                Stock = 100
+            };
+
+            await _repository.CreateProduct(product);
+
+            // Act: Delete the product
+            await _repository.DeleteProduct(product.Id);
+
+            // Assert: Try deleting the product again
+            await Assert.ThrowsAsync<Exception>(() => _repository.DeleteProduct(product.Id));
+        }
+        
+        [Fact]
+        public async Task UpdateProduct_ShouldThrowException_IfProductDoesNotExist()
+        {
+            // Act: delete all products
+            await _repository.DeleteAllProducts();
+            
+            // Arrange: Create a product
+            var product = new Product
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "Product 1",
+                Price = 19.99M,
+                Description = "This is product 1",
+                Stock = 100
+            };
+
+            await _repository.CreateProduct(product);
+
+            // Act: Delete the product
+            await _repository.DeleteProduct(product.Id);
+
+            // Assert: Try updating the product
+            await Assert.ThrowsAsync<Exception>(() => _repository.UpdateProduct(product.Id, product));
+        }
+        
+        [Fact]
+        public async Task GetProduct_ShouldReturnNull_IfProductDoesNotExist()
+        {
+            // Act: delete all products
+            await _repository.DeleteAllProducts();
+            
+            // Arrange: Create a product
+            var product = new Product
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "Product 1",
+                Price = 19.99M,
+                Description = "This is product 1",
+                Stock = 100
+            };
+
+            await _repository.CreateProduct(product);
+
+            // Act: Delete the product
+            await _repository.DeleteProduct(product.Id);
+
+            // Assert: Try fetching the product
+            var fetchedProduct = await _repository.GetProduct(product.Id);
+            Assert.Null(fetchedProduct);
+        }
+        
+        [Fact]
+        public async Task CreateProduct_ShouldThrowException_IfProductAlreadyExists()
+        {
+            // Act: delete all products
+            await _repository.DeleteAllProducts();
+            
+            // Arrange: Create a product
+            var product = new Product
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "Product 1",
+                Price = 19.99M,
+                Description = "This is product 1",
+                Stock = 100
+            };
+
+            await _repository.CreateProduct(product);
+
+            // Assert: Try creating the product again
+            await Assert.ThrowsAsync<Exception>(() => _repository.CreateProduct(product));
+        }
+        
     }
 }
